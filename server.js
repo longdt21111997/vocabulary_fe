@@ -4,10 +4,10 @@ const path = require('path');
 
 const app = express();
 
-app.use(express.static('./dist/vocabulary-fe'));
+app.use(express.static('./dist/'));
 
 app.get('/*', (req, res) =>
-  res.sendFile('index.html', {root: 'dist/vocabulary-fe/'}),
+  res.sendFile('index.html', {root: 'dist/'}),
 );
 
 app.listen(process.env.PORT || 8080);
