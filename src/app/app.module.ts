@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppComponent} from './app.component';
-import {GridModule} from '@progress/kendo-angular-grid';
+import {BodyModule, GridModule, SharedModule} from '@progress/kendo-angular-grid';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {LabelModule} from '@progress/kendo-angular-label';
 import {DropDownsModule} from '@progress/kendo-angular-dropdowns';
@@ -16,6 +16,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {ButtonModule} from '@progress/kendo-angular-buttons';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatButtonModule} from '@angular/material/button';
 
 
 @NgModule({
@@ -38,7 +39,10 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MatIconModule,
     ReactiveFormsModule,
     ButtonModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatButtonModule,
+    BodyModule,
+    SharedModule
   ],
   providers: [HttpClientModule],
   bootstrap: [AppComponent]

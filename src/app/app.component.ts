@@ -1,13 +1,12 @@
-import {PageChangeEvent, GridDataResult} from "@progress/kendo-angular-grid";
+import {GridDataResult, PageChangeEvent} from "@progress/kendo-angular-grid";
 import {Component, OnInit} from "@angular/core";
-import {products} from "./products";
 import {PagerSettings} from '@progress/kendo-angular-grid/dist/es2015/pager/pager-settings';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {AppService} from './app.service';
 import {ToastrService} from 'ngx-toastr';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {MatDialog} from '@angular/material/dialog';
-import {$e} from '@angular/compiler/src/chars';
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-root',
@@ -16,7 +15,6 @@ import {$e} from '@angular/compiler/src/chars';
 })
 export class AppComponent implements OnInit {
   public gridView?: GridDataResult;
-  private items?: any[];
   public pageSize?: number;
   public skip?: number;
   public pageAbleSetting?: PagerSettings;
@@ -53,7 +51,6 @@ export class AppComponent implements OnInit {
       total: 0,
     };
     this.pageSize = 20;
-    this.items = products;
     this.skip = 0;
 
     this.searchForm = this._formBuilder.group({
@@ -65,14 +62,13 @@ export class AppComponent implements OnInit {
   pageChange({skip, take}: PageChangeEvent): void {
     this.skip = skip;
     this.pageSize = take;
-    this.items = products;
     this.loadItems();
   }
 
   private loadItems(): void {
-    this._appService.doSearchWord(this.searchForm.controls.en.value,this.searchForm.controls.vn.value,this.pageSize,this.skip)
+    this._appService.doSearchWord(this.searchForm.controls.en.value, this.searchForm.controls.vn.value, this.pageSize, this.skip)
       .subscribe(response => {
-        if(response.result){
+        if (response.result) {
           this.gridView = {
             data: response.data,
             total: response.meta_data.totalRecords,
@@ -103,5 +99,32 @@ export class AppComponent implements OnInit {
 
   vnInputChange() {
     this.loadItems();
+  }
+
+  clickItem(dataItem: any) {
+  }
+
+  insertNewWord() {
+    Swal.fire({
+      title: 'Do you want to save new word?',
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: `Save`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this._appService.createNewWord({
+          en: this.searchForm.controls.en.value,
+          vn: this.searchForm.controls.vn.value,
+          label_code: null
+        }).subscribe(response => {
+          if (response.result) {
+            this._toa.info("Insert new word success", "Insert new word");
+            this.loadItems();
+          } else {
+            this._toa.error("Insert new word fail", "Insert new word");
+          }
+        })
+      }
+    })
   }
 }

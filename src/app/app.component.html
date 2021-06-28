@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-lg-18 col-xxl-12" style="margin-top: 2em">
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" style="margin-top: 2em">
       <kendo-grid
         [data]="gridView"
         [pageSize]="pageSize"
@@ -9,7 +9,39 @@
         [resizable]=true
         (pageChange)="pageChange($event)"
       >
-        <ng-template kendoGridToolbarTemplate [position]="'top'">
+        <ng-template media="(max-width: 450px)" kendoGridToolbarTemplate [position]="'top'">
+          <form [formGroup]="searchForm">
+            <div class="row">
+              <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                <mat-form-field class="example-form-field">
+                  <mat-label>English word filter</mat-label>
+                  <input matInput type="text" formControlName="en" (keyup)="enInputChange()">
+                  <button *ngIf="searchForm.controls.en.value" matSuffix mat-icon-button aria-label="Clear"
+                          (click)="clearEnSearch()">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </mat-form-field>
+              </div>
+              <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                <mat-form-field class="example-form-field">
+                  <mat-label>Vietnamese word filter</mat-label>
+                  <input matInput type="text" formControlName="vn" (keyup)="vnInputChange()">
+                  <button *ngIf="searchForm.controls.vn.value" matSuffix mat-icon-button aria-label="Clear"
+                          (click)="clearVnSearch()">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </mat-form-field>
+              </div>
+              <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12"
+                   *ngIf="gridView.total===0&&this.searchForm.controls.en.value!==null&&this.searchForm.controls.vn.value!==null&&this.searchForm.controls.en.value.trim()!==''&&this.searchForm.controls.vn.value.trim()!==''">
+                <button [primary]="true" matTooltip="Insert word" (click)="insertNewWord()" kendoButton
+                        [iconClass]="'k-icon k-i-plus-circle'">Insert new word
+                </button>
+              </div>
+            </div>
+          </form>
+        </ng-template>
+        <ng-template media="(min-width: 450px)" kendoGridToolbarTemplate [position]="'top'">
           <form [formGroup]="searchForm">
             <div class="row">
               <div class="col">
@@ -35,27 +67,34 @@
             </div>
           </form>
         </ng-template>
-        <kendo-grid-column title="Action" [width]="3" [headerStyle]="{'background-color': '#666','color': '#fff','line-height': '1em','fontWeight':'bold'}">
+        <kendo-grid-column media="(max-width: 450px)" title="Items">
           <ng-template kendoGridCellTemplate let-dataItem>
-            <div class="action-gr">
-              <button [look]="'outline'" matTooltip="See detail" kendoButton
-                      class="action-button" [iconClass]="'k-icon k-i-preview'"></button>
-            </div>
+            <!-- template for mobile -->
+            <dl (click)="clickItem(dataItem)">
+              <dt>English</dt>
+              <dd>{{ dataItem.en }}</dd>
+
+              <dt>Vietnamese</dt>
+              <dd>{{ dataItem.vn }}</dd>
+            </dl>
           </ng-template>
         </kendo-grid-column>
         <kendo-grid-column
-          [width]="20"
+          media="(min-width: 450px)"
+          [width]="10"
           [headerStyle]="{'background-color': '#666','color': '#fff','line-height': '1em','fontWeight':'bold'}"
           field="en"
           title="English">
         </kendo-grid-column>
 
         <kendo-grid-column
-          [width]="20"
+          media="(min-width: 450px)"
+          [width]="10"
           [headerStyle]="{'background-color': '#666','color': '#fff','line-height': '1em','fontWeight':'bold'}"
           field="vn"
           title="Vietnamese">
         </kendo-grid-column>
+
       </kendo-grid>
     </div>
 
